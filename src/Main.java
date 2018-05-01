@@ -17,10 +17,20 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.addData();
+		//main.addData();
 		main.printSchools();
+		//main.executeQueries();
+		//main.executeQuery1();
+		//main.executeQuery2();
+		//main.executeQuery3();
+		//main.executeQuery4();
+		//main.executeQuery5();
+		//main.executeQuery6();
+		//main.executeQuery7();
 		main.close();
 	}
+
+	
 
 	public Main() {
 		session = HibernateUtil.getSessionFactory().openSession();
@@ -29,6 +39,69 @@ public class Main {
 	public void close() {
 		session.close();
 		HibernateUtil.shutdown();
+	}
+	
+	private void executeQueries() {
+        String hql = "FROM School";
+        Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);
+}
+	
+	private void executeQuery1() {
+        String hql = "FROM School S where S.name = 'AE'";
+        Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);
+	}
+
+	private void executeQuery2(){
+		String hql = "FROM School S where S.name = 'AWF'";
+		Query query = session.createQuery(hql);
+		List<School> results = query.list();
+		Transaction transaction = session.beginTransaction();
+		for (School school: results ){
+		session.delete(school); 
+		}
+		transaction.commit();	
+	}
+	
+	private void executeQuery3(){
+		String hql = "Select COUNT(s) from School s ";
+		Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);
+	}
+	
+	private void executeQuery4(){
+		String hql = "Select COUNT(s) from Student s ";
+		Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);
+	}
+	
+	private void executeQuery5(){
+		String hql = "Select Count(s) from School s where  size (s.classes) >= 2";
+		Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);		
+	}
+	
+	private void executeQuery6(){
+		String hql = "SELECT s FROM School s INNER JOIN s.classes classes WHERE classes.profile = 'mat-fiz' and classes.currentYear>=2008";
+		Query query = session.createQuery(hql);
+        List results = query.list();
+        System.out.println(results);		
+	}
+	
+	private void executeQuery7(){
+	Query query = session.createQuery("from School where id= :id");
+	query.setLong("id", 2);
+	School school = (School) query.uniqueResult();
+	school.setAddress("ul Wisniowa 45");
+	Transaction transaction = session.beginTransaction();
+	session.save(school); 
+	transaction.commit();
 	}
 	
 	private void addData(){
